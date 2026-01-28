@@ -1,0 +1,72 @@
+{{define "title"}} {{.Title}} {{end}} {{define "content"}}
+<form
+    method="POST"
+    action="shortener"
+    class="flex h-12 w-full items-center gap-2 overflow-hidden rounded-full border border-gray-500/30 bg-white"
+>
+    <input
+        type="text"
+        name="url"
+        placeholder="Enter your url"
+        class="h-full bg-transparent w-full pl-6 text-sm placeholder-gray-500 outline-none"
+        required
+        autocomplete="off"
+    />
+    <button
+        type="submit"
+        class="mr-1 h-10 w-64 rounded-full bg-indigo-500 text-sm text-white cursor-pointer transition active:scale-95"
+    >
+        Create short url
+    </button>
+</form>
+<div
+    class="mt-10 relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-lg bg-clip-border"
+>
+    <table class="w-full text-left table-auto min-w-max text-slate-800">
+        <thead>
+            <tr class="text-slate-500 border-b border-slate-300 bg-gray-200">
+                <th class="p-4">
+                    <p class="text-sm leading-none font-normal">URL</p>
+                </th>
+                <th class="p-4">
+                    <p class="text-sm leading-none font-normal">Token</p>
+                </th>
+                <th class="p-4">
+                    <p class="text-sm leading-none font-normal">Create At</p>
+                </th>
+                <th class="p-4">
+                    <p></p>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range $i, $redirect := .Redirects}}
+            <tr class="hover:bg-slate-50">
+                <td class="p-4">
+                    <p class="text-sm font-bold">
+                        {{truncate $redirect.Url 60}}
+                    </p>
+                </td>
+                <td class="p-4">
+                    <p class="text-sm font-bold">{{$redirect.Token}}</p>
+                </td>
+                <td class="p-4">
+                    <p class="text-sm">{{fmtDate $redirect.CreatedAt}}</p>
+                </td>
+                <td class="p-4">
+                    <form action="shortener/{{$redirect.ID}}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button
+                            class="text-sm font-semibold cursor-pointer hover:underline"
+                            type="submit"
+                        >
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}
