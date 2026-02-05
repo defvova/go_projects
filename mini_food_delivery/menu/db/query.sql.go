@@ -7,7 +7,168 @@ package db
 
 import (
 	"context"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const createCategory = `-- name: CreateCategory :one
+INSERT INTO categories (
+    menu_id, name, position
+) VALUES (
+    $1, $2, $3
+)
+RETURNING id, menu_id, name, position, created_at, updated_at
+`
+
+type CreateCategoryParams struct {
+	MenuID   int64
+	Name     string
+	Position int32
+}
+
+func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) (Category, error) {
+	row := q.db.QueryRow(ctx, createCategory, arg.MenuID, arg.Name, arg.Position)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.MenuID,
+		&i.Name,
+		&i.Position,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createMenu = `-- name: CreateMenu :one
+INSERT INTO menus (
+    name, description, active
+) VALUES (
+    $1, $2, $3
+)
+RETURNING id, name, description, active, created_at, updated_at
+`
+
+type CreateMenuParams struct {
+	Name        string
+	Description pgtype.Text
+	Active      bool
+}
+
+func (q *Queries) CreateMenu(ctx context.Context, arg CreateMenuParams) (Menu, error) {
+	row := q.db.QueryRow(ctx, createMenu, arg.Name, arg.Description, arg.Active)
+	var i Menu
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Active,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createMenuItem = `-- name: CreateMenuItem :one
+INSERT INTO menu_items (
+    category_id, name, description, available
+) VALUES (
+    $1, $2, $3, $4
+)
+RETURNING id, category_id, name, description, image_url, available, created_at, updated_at
+`
+
+type CreateMenuItemParams struct {
+	CategoryID  int64
+	Name        string
+	Description pgtype.Text
+	Available   bool
+}
+
+func (q *Queries) CreateMenuItem(ctx context.Context, arg CreateMenuItemParams) (MenuItem, error) {
+	row := q.db.QueryRow(ctx, createMenuItem,
+		arg.CategoryID,
+		arg.Name,
+		arg.Description,
+		arg.Available,
+	)
+	var i MenuItem
+	err := row.Scan(
+		&i.ID,
+		&i.CategoryID,
+		&i.Name,
+		&i.Description,
+		&i.ImageUrl,
+		&i.Available,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createMenuItemPrice = `-- name: CreateMenuItemPrice :one
+INSERT INTO menu_item_prices (
+    menu_item_id, price_cents, currency, valid_from, valid_to
+) VALUES (
+    $1, $2, $3, $4, $5
+)
+RETURNING id, menu_item_id, price_cents, currency, valid_from, valid_to, created_at, updated_at
+`
+
+type CreateMenuItemPriceParams struct {
+	MenuItemID int64
+	PriceCents int32
+	Currency   string
+	ValidFrom  time.Time
+	ValidTo    *time.Time
+}
+
+func (q *Queries) CreateMenuItemPrice(ctx context.Context, arg CreateMenuItemPriceParams) (MenuItemPrice, error) {
+	row := q.db.QueryRow(ctx, createMenuItemPrice,
+		arg.MenuItemID,
+		arg.PriceCents,
+		arg.Currency,
+		arg.ValidFrom,
+		arg.ValidTo,
+	)
+	var i MenuItemPrice
+	err := row.Scan(
+		&i.ID,
+		&i.MenuItemID,
+		&i.PriceCents,
+		&i.Currency,
+		&i.ValidFrom,
+		&i.ValidTo,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getCategoryByMenuAndName = `-- name: GetCategoryByMenuAndName :one
+SELECT id, menu_id, name, position, created_at, updated_at FROM categories
+WHERE menu_id = $1 AND name = $2 LIMIT 1
+`
+
+type GetCategoryByMenuAndNameParams struct {
+	MenuID int64
+	Name   string
+}
+
+func (q *Queries) GetCategoryByMenuAndName(ctx context.Context, arg GetCategoryByMenuAndNameParams) (Category, error) {
+	row := q.db.QueryRow(ctx, getCategoryByMenuAndName, arg.MenuID, arg.Name)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.MenuID,
+		&i.Name,
+		&i.Position,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const getMenu = `-- name: GetMenu :one
 SELECT id, name, description, active, created_at, updated_at FROM menus
@@ -22,6 +183,51 @@ func (q *Queries) GetMenu(ctx context.Context, id int64) (Menu, error) {
 		&i.Name,
 		&i.Description,
 		&i.Active,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getMenuByName = `-- name: GetMenuByName :one
+SELECT id, name, description, active, created_at, updated_at FROM menus
+WHERE name = $1 LIMIT 1
+`
+
+func (q *Queries) GetMenuByName(ctx context.Context, name string) (Menu, error) {
+	row := q.db.QueryRow(ctx, getMenuByName, name)
+	var i Menu
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.Active,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getMenuItemByCategoryAndName = `-- name: GetMenuItemByCategoryAndName :one
+SELECT id, category_id, name, description, image_url, available, created_at, updated_at FROM menu_items
+WHERE category_id = $1 AND name = $2 LIMIT 1
+`
+
+type GetMenuItemByCategoryAndNameParams struct {
+	CategoryID int64
+	Name       string
+}
+
+func (q *Queries) GetMenuItemByCategoryAndName(ctx context.Context, arg GetMenuItemByCategoryAndNameParams) (MenuItem, error) {
+	row := q.db.QueryRow(ctx, getMenuItemByCategoryAndName, arg.CategoryID, arg.Name)
+	var i MenuItem
+	err := row.Scan(
+		&i.ID,
+		&i.CategoryID,
+		&i.Name,
+		&i.Description,
+		&i.ImageUrl,
+		&i.Available,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -57,4 +263,33 @@ func (q *Queries) GetMenus(ctx context.Context) ([]Menu, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const priceExists = `-- name: PriceExists :one
+SELECT EXISTS (
+    SELECT 1 FROM menu_item_prices
+    WHERE menu_item_id = $1
+        AND price_cents = $2
+        AND currency = $3
+        AND valid_from = $4
+)
+`
+
+type PriceExistsParams struct {
+	MenuItemID int64
+	PriceCents int32
+	Currency   string
+	ValidFrom  time.Time
+}
+
+func (q *Queries) PriceExists(ctx context.Context, arg PriceExistsParams) (bool, error) {
+	row := q.db.QueryRow(ctx, priceExists,
+		arg.MenuItemID,
+		arg.PriceCents,
+		arg.Currency,
+		arg.ValidFrom,
+	)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }

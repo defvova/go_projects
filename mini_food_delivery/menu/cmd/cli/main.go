@@ -1,0 +1,50 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"mini_food_delivery/menu/db"
+	"mini_food_delivery/menu/internal/config"
+	"mini_food_delivery/menu/internal/seed"
+	"os"
+	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
+)
+
+const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
+
+func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal().Err(err).Msg("Error loading .env file")
+	}
+	c := config.NewConfig()
+
+	dbCreds := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.Username, c.DB.Password, c.DB.DBName, c.DB.Port)
+	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
+	defer cancel()
+	conn, err := pgx.Connect(ctx, dbCreds)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Unable to connect to database")
+		os.Exit(1)
+	}
+	tx, err := conn.Begin(ctx)
+	if err != nil {
+		log.Fatal().Err(err).Msg("transaction error")
+		os.Exit(1)
+	}
+	defer tx.Rollback(ctx)
+
+	q := db.New(tx)
+
+	if err := seed.SeedAll(ctx, q); err != nil {
+		log.Fatal().Err(err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		log.Fatal().Err(err)
+	}
+	log.Info().Msg("menu seeding completed")
+}
