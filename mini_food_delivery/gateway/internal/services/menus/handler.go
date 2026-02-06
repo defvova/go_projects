@@ -2,7 +2,6 @@ package menus
 
 import (
 	"context"
-	"mini_food_delivery/gateway/internal/services/menus/menuclient"
 	"mini_food_delivery/gateway/internal/utils/grpcstatus"
 	"mini_food_delivery/gateway/internal/utils/writejson"
 	menuv1 "mini_food_delivery/menu/pkg/menu/v1"
@@ -11,19 +10,19 @@ import (
 )
 
 type Handler struct {
-	menu menuclient.MenuClient
+	menuClient menuv1.MenuServiceClient
 }
 
-func NewHandler(menuClient menuclient.MenuClient) *Handler {
+func NewHandler(mc menuv1.MenuServiceClient) *Handler {
 	return &Handler{
-		menu: menuClient,
+		menuClient: mc,
 	}
 }
 
 func (h *Handler) GetAllMenus(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 	defer cancel()
-	resp, err := h.menu.Client.GetAllMenus(ctx, &menuv1.GetAllMenusRequest{})
+	resp, err := h.menuClient.GetAllMenus(ctx, &menuv1.GetAllMenusRequest{})
 
 	if err != nil {
 		grpcstatus.WriteGrpcError(w, err)

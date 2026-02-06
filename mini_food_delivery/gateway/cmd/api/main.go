@@ -5,7 +5,7 @@ import (
 	"fmt"
 	services "mini_food_delivery/gateway/internal/api"
 	"mini_food_delivery/gateway/internal/config"
-	"mini_food_delivery/gateway/internal/services/menus/menuclient"
+	"mini_food_delivery/gateway/internal/menugrpc"
 	"net/http"
 	"os"
 	"os/signal"
@@ -40,17 +40,17 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(60 * time.Second))
 
-	menuGrpcClient, err := menuclient.NewMenuClient(c.MenuGRPCServer.Url)
+	menuGrpc, err := menugrpc.New(c.MenuGRPCServer.Url)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Connection error with grpc menu client")
+		log.Fatal().Err(err).Msg("failed to connect to menu grpc")
 	}
-	defer menuGrpcClient.Close()
+	defer menuGrpc.Close()
 
-	a := services.ApiService{
-		Menu: *menuGrpcClient,
-		R:    r,
+	api := services.ApiService{
+		MenuGrpc: menuGrpc,
+		R:        r,
 	}
-	a.Init()
+	api.Init()
 
 	closed := make(chan struct{})
 	go func() {
