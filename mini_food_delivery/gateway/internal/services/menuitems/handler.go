@@ -28,7 +28,7 @@ func (h *Handler) GetAllMenuItems(w http.ResponseWriter, r *http.Request) {
 
 	id := chi.URLParam(r, "categoryId")
 	categoryId, _ := strconv.Atoi(id)
-	resp, err := h.menuItemClient.GetAllMenuItems(ctx, &menuitemv1.GetAllMenuItemsRequest{CategoryId: int64(categoryId)})
+	resp, err := h.menuItemClient.GetAllMenuItemsWithPrice(ctx, &menuitemv1.GetAllMenuItemsWithPriceRequest{CategoryId: int64(categoryId)})
 
 	if err != nil {
 		grpcstatus.WriteGrpcError(w, err)

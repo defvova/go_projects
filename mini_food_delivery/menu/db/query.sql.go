@@ -300,13 +300,13 @@ func (q *Queries) GetMenuItemPrices(ctx context.Context, menuItemID int64) ([]Me
 	return items, nil
 }
 
-const getMenuItems = `-- name: GetMenuItems :many
+const getMenuItemsByCategoryId = `-- name: GetMenuItemsByCategoryId :many
 SELECT id, category_id, name, description, image_url, available, created_at, updated_at FROM menu_items
 WHERE category_id = $1
 `
 
-func (q *Queries) GetMenuItems(ctx context.Context, categoryID int64) ([]MenuItem, error) {
-	rows, err := q.db.Query(ctx, getMenuItems, categoryID)
+func (q *Queries) GetMenuItemsByCategoryId(ctx context.Context, categoryID int64) ([]MenuItem, error) {
+	rows, err := q.db.Query(ctx, getMenuItemsByCategoryId, categoryID)
 	if err != nil {
 		return nil, err
 	}
@@ -323,6 +323,68 @@ func (q *Queries) GetMenuItems(ctx context.Context, categoryID int64) ([]MenuIte
 			&i.Available,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getMenuItemsWithPriceByCategoryId = `-- name: GetMenuItemsWithPriceByCategoryId :many
+SELECT menu_items.id, category_id, name, description, image_url, available, menu_items.created_at, menu_items.updated_at, menu_item_prices.id, menu_item_id, price_cents, currency, valid_from, valid_to, menu_item_prices.created_at, menu_item_prices.updated_at FROM menu_items
+INNER JOIN menu_item_prices ON menu_item_prices.menu_item_id = menu_items.id
+WHERE menu_items.category_id = $1
+`
+
+type GetMenuItemsWithPriceByCategoryIdRow struct {
+	ID          int64
+	CategoryID  int64
+	Name        string
+	Description pgtype.Text
+	ImageUrl    pgtype.Text
+	Available   bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	ID_2        int64
+	MenuItemID  int64
+	PriceCents  int32
+	Currency    string
+	ValidFrom   time.Time
+	ValidTo     *time.Time
+	CreatedAt_2 time.Time
+	UpdatedAt_2 time.Time
+}
+
+func (q *Queries) GetMenuItemsWithPriceByCategoryId(ctx context.Context, categoryID int64) ([]GetMenuItemsWithPriceByCategoryIdRow, error) {
+	rows, err := q.db.Query(ctx, getMenuItemsWithPriceByCategoryId, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetMenuItemsWithPriceByCategoryIdRow
+	for rows.Next() {
+		var i GetMenuItemsWithPriceByCategoryIdRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CategoryID,
+			&i.Name,
+			&i.Description,
+			&i.ImageUrl,
+			&i.Available,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ID_2,
+			&i.MenuItemID,
+			&i.PriceCents,
+			&i.Currency,
+			&i.ValidFrom,
+			&i.ValidTo,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
 		); err != nil {
 			return nil, err
 		}

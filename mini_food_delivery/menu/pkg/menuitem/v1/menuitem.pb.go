@@ -21,31 +21,33 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type MenuItem struct {
+type MenuItemWithPrice struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	ImageUrl      string                 `protobuf:"bytes,4,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	Available     bool                   `protobuf:"varint,5,opt,name=available,proto3" json:"available,omitempty"`
+	PriceCents    int32                  `protobuf:"varint,6,opt,name=price_cents,json=priceCents,proto3" json:"price_cents,omitempty"`
+	Currency      string                 `protobuf:"bytes,7,opt,name=currency,proto3" json:"currency,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *MenuItem) Reset() {
-	*x = MenuItem{}
+func (x *MenuItemWithPrice) Reset() {
+	*x = MenuItemWithPrice{}
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MenuItem) String() string {
+func (x *MenuItemWithPrice) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MenuItem) ProtoMessage() {}
+func (*MenuItemWithPrice) ProtoMessage() {}
 
-func (x *MenuItem) ProtoReflect() protoreflect.Message {
+func (x *MenuItemWithPrice) ProtoReflect() protoreflect.Message {
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,47 +59,61 @@ func (x *MenuItem) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MenuItem.ProtoReflect.Descriptor instead.
-func (*MenuItem) Descriptor() ([]byte, []int) {
+// Deprecated: Use MenuItemWithPrice.ProtoReflect.Descriptor instead.
+func (*MenuItemWithPrice) Descriptor() ([]byte, []int) {
 	return file_menuitem_v1_menuitem_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *MenuItem) GetId() int64 {
+func (x *MenuItemWithPrice) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *MenuItem) GetName() string {
+func (x *MenuItemWithPrice) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *MenuItem) GetDescription() string {
+func (x *MenuItemWithPrice) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *MenuItem) GetImageUrl() string {
+func (x *MenuItemWithPrice) GetImageUrl() string {
 	if x != nil {
 		return x.ImageUrl
 	}
 	return ""
 }
 
-func (x *MenuItem) GetAvailable() bool {
+func (x *MenuItemWithPrice) GetAvailable() bool {
 	if x != nil {
 		return x.Available
 	}
 	return false
 }
 
-type GetAllMenuItemsRequest struct {
+func (x *MenuItemWithPrice) GetPriceCents() int32 {
+	if x != nil {
+		return x.PriceCents
+	}
+	return 0
+}
+
+func (x *MenuItemWithPrice) GetCurrency() string {
+	if x != nil {
+		return x.Currency
+	}
+	return ""
+}
+
+type GetAllMenuItemsWithPriceRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
 	Offset        int32                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
@@ -106,20 +122,20 @@ type GetAllMenuItemsRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetAllMenuItemsRequest) Reset() {
-	*x = GetAllMenuItemsRequest{}
+func (x *GetAllMenuItemsWithPriceRequest) Reset() {
+	*x = GetAllMenuItemsWithPriceRequest{}
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetAllMenuItemsRequest) String() string {
+func (x *GetAllMenuItemsWithPriceRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAllMenuItemsRequest) ProtoMessage() {}
+func (*GetAllMenuItemsWithPriceRequest) ProtoMessage() {}
 
-func (x *GetAllMenuItemsRequest) ProtoReflect() protoreflect.Message {
+func (x *GetAllMenuItemsWithPriceRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -131,53 +147,53 @@ func (x *GetAllMenuItemsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAllMenuItemsRequest.ProtoReflect.Descriptor instead.
-func (*GetAllMenuItemsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAllMenuItemsWithPriceRequest.ProtoReflect.Descriptor instead.
+func (*GetAllMenuItemsWithPriceRequest) Descriptor() ([]byte, []int) {
 	return file_menuitem_v1_menuitem_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetAllMenuItemsRequest) GetLimit() int32 {
+func (x *GetAllMenuItemsWithPriceRequest) GetLimit() int32 {
 	if x != nil {
 		return x.Limit
 	}
 	return 0
 }
 
-func (x *GetAllMenuItemsRequest) GetOffset() int32 {
+func (x *GetAllMenuItemsWithPriceRequest) GetOffset() int32 {
 	if x != nil {
 		return x.Offset
 	}
 	return 0
 }
 
-func (x *GetAllMenuItemsRequest) GetCategoryId() int64 {
+func (x *GetAllMenuItemsWithPriceRequest) GetCategoryId() int64 {
 	if x != nil {
 		return x.CategoryId
 	}
 	return 0
 }
 
-type GetAllMenuItemsResponse struct {
+type GetAllMenuItemsWithPriceResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Items         []*MenuItem            `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Items         []*MenuItemWithPrice   `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetAllMenuItemsResponse) Reset() {
-	*x = GetAllMenuItemsResponse{}
+func (x *GetAllMenuItemsWithPriceResponse) Reset() {
+	*x = GetAllMenuItemsWithPriceResponse{}
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetAllMenuItemsResponse) String() string {
+func (x *GetAllMenuItemsWithPriceResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAllMenuItemsResponse) ProtoMessage() {}
+func (*GetAllMenuItemsWithPriceResponse) ProtoMessage() {}
 
-func (x *GetAllMenuItemsResponse) ProtoReflect() protoreflect.Message {
+func (x *GetAllMenuItemsWithPriceResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_menuitem_v1_menuitem_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -189,12 +205,12 @@ func (x *GetAllMenuItemsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAllMenuItemsResponse.ProtoReflect.Descriptor instead.
-func (*GetAllMenuItemsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAllMenuItemsWithPriceResponse.ProtoReflect.Descriptor instead.
+func (*GetAllMenuItemsWithPriceResponse) Descriptor() ([]byte, []int) {
 	return file_menuitem_v1_menuitem_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *GetAllMenuItemsResponse) GetItems() []*MenuItem {
+func (x *GetAllMenuItemsWithPriceResponse) GetItems() []*MenuItemWithPrice {
 	if x != nil {
 		return x.Items
 	}
@@ -205,22 +221,25 @@ var File_menuitem_v1_menuitem_proto protoreflect.FileDescriptor
 
 const file_menuitem_v1_menuitem_proto_rawDesc = "" +
 	"\n" +
-	"\x1amenuitem/v1/menuitem.proto\x12\vmenuitem.v1\"\x8b\x01\n" +
-	"\bMenuItem\x12\x0e\n" +
+	"\x1amenuitem/v1/menuitem.proto\x12\vmenuitem.v1\"\xd1\x01\n" +
+	"\x11MenuItemWithPrice\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1b\n" +
 	"\timage_url\x18\x04 \x01(\tR\bimageUrl\x12\x1c\n" +
-	"\tavailable\x18\x05 \x01(\bR\tavailable\"g\n" +
-	"\x16GetAllMenuItemsRequest\x12\x14\n" +
+	"\tavailable\x18\x05 \x01(\bR\tavailable\x12\x1f\n" +
+	"\vprice_cents\x18\x06 \x01(\x05R\n" +
+	"priceCents\x12\x1a\n" +
+	"\bcurrency\x18\a \x01(\tR\bcurrency\"p\n" +
+	"\x1fGetAllMenuItemsWithPriceRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x02 \x01(\x05R\x06offset\x12\x1f\n" +
 	"\vcategory_id\x18\x03 \x01(\x03R\n" +
-	"categoryId\"F\n" +
-	"\x17GetAllMenuItemsResponse\x12+\n" +
-	"\x05items\x18\x01 \x03(\v2\x15.menuitem.v1.MenuItemR\x05items2q\n" +
-	"\x0fMenuItemService\x12^\n" +
-	"\x0fGetAllMenuItems\x12#.menuitem.v1.GetAllMenuItemsRequest\x1a$.menuitem.v1.GetAllMenuItemsResponse\"\x00BSZQgithub.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1;menuitemv1b\x06proto3"
+	"categoryId\"X\n" +
+	" GetAllMenuItemsWithPriceResponse\x124\n" +
+	"\x05items\x18\x01 \x03(\v2\x1e.menuitem.v1.MenuItemWithPriceR\x05items2\x8c\x01\n" +
+	"\x0fMenuItemService\x12y\n" +
+	"\x18GetAllMenuItemsWithPrice\x12,.menuitem.v1.GetAllMenuItemsWithPriceRequest\x1a-.menuitem.v1.GetAllMenuItemsWithPriceResponse\"\x00BSZQgithub.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1;menuitemv1b\x06proto3"
 
 var (
 	file_menuitem_v1_menuitem_proto_rawDescOnce sync.Once
@@ -236,14 +255,14 @@ func file_menuitem_v1_menuitem_proto_rawDescGZIP() []byte {
 
 var file_menuitem_v1_menuitem_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_menuitem_v1_menuitem_proto_goTypes = []any{
-	(*MenuItem)(nil),                // 0: menuitem.v1.MenuItem
-	(*GetAllMenuItemsRequest)(nil),  // 1: menuitem.v1.GetAllMenuItemsRequest
-	(*GetAllMenuItemsResponse)(nil), // 2: menuitem.v1.GetAllMenuItemsResponse
+	(*MenuItemWithPrice)(nil),                // 0: menuitem.v1.MenuItemWithPrice
+	(*GetAllMenuItemsWithPriceRequest)(nil),  // 1: menuitem.v1.GetAllMenuItemsWithPriceRequest
+	(*GetAllMenuItemsWithPriceResponse)(nil), // 2: menuitem.v1.GetAllMenuItemsWithPriceResponse
 }
 var file_menuitem_v1_menuitem_proto_depIdxs = []int32{
-	0, // 0: menuitem.v1.GetAllMenuItemsResponse.items:type_name -> menuitem.v1.MenuItem
-	1, // 1: menuitem.v1.MenuItemService.GetAllMenuItems:input_type -> menuitem.v1.GetAllMenuItemsRequest
-	2, // 2: menuitem.v1.MenuItemService.GetAllMenuItems:output_type -> menuitem.v1.GetAllMenuItemsResponse
+	0, // 0: menuitem.v1.GetAllMenuItemsWithPriceResponse.items:type_name -> menuitem.v1.MenuItemWithPrice
+	1, // 1: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:input_type -> menuitem.v1.GetAllMenuItemsWithPriceRequest
+	2, // 2: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:output_type -> menuitem.v1.GetAllMenuItemsWithPriceResponse
 	2, // [2:3] is the sub-list for method output_type
 	1, // [1:2] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name

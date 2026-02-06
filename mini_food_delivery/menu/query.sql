@@ -33,9 +33,14 @@ INSERT INTO categories (
 )
 RETURNING *;
 
--- name: GetMenuItems :many
+-- name: GetMenuItemsByCategoryId :many
 SELECT * FROM menu_items
 WHERE category_id = $1;
+
+-- name: GetMenuItemsWithPriceByCategoryId :many
+SELECT * FROM menu_items
+INNER JOIN menu_item_prices ON menu_item_prices.menu_item_id = menu_items.id
+WHERE menu_items.category_id = $1;
 
 -- name: GetMenuItemByCategoryAndName :one
 SELECT * FROM menu_items

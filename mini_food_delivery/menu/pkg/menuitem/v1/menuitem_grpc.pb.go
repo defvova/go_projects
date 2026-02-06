@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MenuItemService_GetAllMenuItems_FullMethodName = "/menuitem.v1.MenuItemService/GetAllMenuItems"
+	MenuItemService_GetAllMenuItemsWithPrice_FullMethodName = "/menuitem.v1.MenuItemService/GetAllMenuItemsWithPrice"
 )
 
 // MenuItemServiceClient is the client API for MenuItemService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MenuItemServiceClient interface {
-	GetAllMenuItems(ctx context.Context, in *GetAllMenuItemsRequest, opts ...grpc.CallOption) (*GetAllMenuItemsResponse, error)
+	GetAllMenuItemsWithPrice(ctx context.Context, in *GetAllMenuItemsWithPriceRequest, opts ...grpc.CallOption) (*GetAllMenuItemsWithPriceResponse, error)
 }
 
 type menuItemServiceClient struct {
@@ -37,10 +37,10 @@ func NewMenuItemServiceClient(cc grpc.ClientConnInterface) MenuItemServiceClient
 	return &menuItemServiceClient{cc}
 }
 
-func (c *menuItemServiceClient) GetAllMenuItems(ctx context.Context, in *GetAllMenuItemsRequest, opts ...grpc.CallOption) (*GetAllMenuItemsResponse, error) {
+func (c *menuItemServiceClient) GetAllMenuItemsWithPrice(ctx context.Context, in *GetAllMenuItemsWithPriceRequest, opts ...grpc.CallOption) (*GetAllMenuItemsWithPriceResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAllMenuItemsResponse)
-	err := c.cc.Invoke(ctx, MenuItemService_GetAllMenuItems_FullMethodName, in, out, cOpts...)
+	out := new(GetAllMenuItemsWithPriceResponse)
+	err := c.cc.Invoke(ctx, MenuItemService_GetAllMenuItemsWithPrice_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (c *menuItemServiceClient) GetAllMenuItems(ctx context.Context, in *GetAllM
 // All implementations must embed UnimplementedMenuItemServiceServer
 // for forward compatibility.
 type MenuItemServiceServer interface {
-	GetAllMenuItems(context.Context, *GetAllMenuItemsRequest) (*GetAllMenuItemsResponse, error)
+	GetAllMenuItemsWithPrice(context.Context, *GetAllMenuItemsWithPriceRequest) (*GetAllMenuItemsWithPriceResponse, error)
 	mustEmbedUnimplementedMenuItemServiceServer()
 }
 
@@ -62,8 +62,8 @@ type MenuItemServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMenuItemServiceServer struct{}
 
-func (UnimplementedMenuItemServiceServer) GetAllMenuItems(context.Context, *GetAllMenuItemsRequest) (*GetAllMenuItemsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetAllMenuItems not implemented")
+func (UnimplementedMenuItemServiceServer) GetAllMenuItemsWithPrice(context.Context, *GetAllMenuItemsWithPriceRequest) (*GetAllMenuItemsWithPriceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllMenuItemsWithPrice not implemented")
 }
 func (UnimplementedMenuItemServiceServer) mustEmbedUnimplementedMenuItemServiceServer() {}
 func (UnimplementedMenuItemServiceServer) testEmbeddedByValue()                         {}
@@ -86,20 +86,20 @@ func RegisterMenuItemServiceServer(s grpc.ServiceRegistrar, srv MenuItemServiceS
 	s.RegisterService(&MenuItemService_ServiceDesc, srv)
 }
 
-func _MenuItemService_GetAllMenuItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllMenuItemsRequest)
+func _MenuItemService_GetAllMenuItemsWithPrice_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllMenuItemsWithPriceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MenuItemServiceServer).GetAllMenuItems(ctx, in)
+		return srv.(MenuItemServiceServer).GetAllMenuItemsWithPrice(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: MenuItemService_GetAllMenuItems_FullMethodName,
+		FullMethod: MenuItemService_GetAllMenuItemsWithPrice_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MenuItemServiceServer).GetAllMenuItems(ctx, req.(*GetAllMenuItemsRequest))
+		return srv.(MenuItemServiceServer).GetAllMenuItemsWithPrice(ctx, req.(*GetAllMenuItemsWithPriceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,8 +112,8 @@ var MenuItemService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MenuItemServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetAllMenuItems",
-			Handler:    _MenuItemService_GetAllMenuItems_Handler,
+			MethodName: "GetAllMenuItemsWithPrice",
+			Handler:    _MenuItemService_GetAllMenuItemsWithPrice_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

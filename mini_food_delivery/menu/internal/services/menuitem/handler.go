@@ -3,6 +3,8 @@ package menuitem
 import (
 	"context"
 	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Handler struct {
@@ -16,27 +18,30 @@ func NewHandler(c MenuItemStore) *Handler {
 	}
 }
 
-func (h *Handler) GetAllMenuItems(
+func (h *Handler) GetAllMenuItemsWithPrice(
 	ctx context.Context,
-	req *menuitemv1.GetAllMenuItemsRequest,
-) (*menuitemv1.GetAllMenuItemsResponse, error) {
-	items, err := h.store.GetAllMenuItems(ctx, req.CategoryId)
+	req *menuitemv1.GetAllMenuItemsWithPriceRequest,
+) (*menuitemv1.GetAllMenuItemsWithPriceResponse, error) {
+	items, err := h.store.GetAllMenuItemsWithPrice(ctx, req.CategoryId)
 	if err != nil {
+		log.Error().Err(err).Msg("MenuItem: sql query error")
 		return nil, err
 	}
-	data := make([]*menuitemv1.MenuItem, len(items))
+	data := make([]*menuitemv1.MenuItemWithPrice, len(items))
 
 	for i, item := range items {
-		data[i] = &menuitemv1.MenuItem{
+		data[i] = &menuitemv1.MenuItemWithPrice{
 			Id:          item.ID,
 			Name:        item.Name,
 			Description: item.Description.String,
 			ImageUrl:    item.ImageUrl.String,
 			Available:   item.Available,
+			PriceCents:  item.PriceCents,
+			Currency:    item.Currency,
 		}
 	}
 
-	return &menuitemv1.GetAllMenuItemsResponse{
+	return &menuitemv1.GetAllMenuItemsWithPriceResponse{
 		Items: data,
 	}, nil
 }

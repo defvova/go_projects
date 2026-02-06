@@ -6,7 +6,7 @@ import (
 )
 
 type MenuItemStore interface {
-	GetAllMenuItems(ctx context.Context, categoryId int64) ([]db.MenuItem, error)
+	GetAllMenuItemsWithPrice(ctx context.Context, categoryId int64) ([]db.GetMenuItemsWithPriceByCategoryIdRow, error)
 }
 
 type Store struct {
@@ -17,8 +17,8 @@ func NewStore(q *db.Queries) *Store {
 	return &Store{q: q}
 }
 
-func (s *Store) GetAllMenuItems(ctx context.Context, categoryId int64) ([]db.MenuItem, error) {
-	data, err := s.q.GetMenuItems(ctx, categoryId)
+func (s *Store) GetAllMenuItemsWithPrice(ctx context.Context, categoryId int64) ([]db.GetMenuItemsWithPriceByCategoryIdRow, error) {
+	data, err := s.q.GetMenuItemsWithPriceByCategoryId(ctx, categoryId)
 	if err != nil {
 		return nil, err
 	}
