@@ -146,6 +146,38 @@ func (q *Queries) CreateMenuItemPrice(ctx context.Context, arg CreateMenuItemPri
 	return i, err
 }
 
+const getCategories = `-- name: GetCategories :many
+SELECT id, menu_id, name, position, created_at, updated_at FROM categories
+WHERE menu_id = $1
+`
+
+func (q *Queries) GetCategories(ctx context.Context, menuID int64) ([]Category, error) {
+	rows, err := q.db.Query(ctx, getCategories, menuID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Category
+	for rows.Next() {
+		var i Category
+		if err := rows.Scan(
+			&i.ID,
+			&i.MenuID,
+			&i.Name,
+			&i.Position,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getCategoryByMenuAndName = `-- name: GetCategoryByMenuAndName :one
 SELECT id, menu_id, name, position, created_at, updated_at FROM categories
 WHERE menu_id = $1 AND name = $2 LIMIT 1
@@ -232,6 +264,74 @@ func (q *Queries) GetMenuItemByCategoryAndName(ctx context.Context, arg GetMenuI
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const getMenuItemPrices = `-- name: GetMenuItemPrices :many
+SELECT id, menu_item_id, price_cents, currency, valid_from, valid_to, created_at, updated_at FROM menu_item_prices
+WHERE menu_item_id = $1
+`
+
+func (q *Queries) GetMenuItemPrices(ctx context.Context, menuItemID int64) ([]MenuItemPrice, error) {
+	rows, err := q.db.Query(ctx, getMenuItemPrices, menuItemID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []MenuItemPrice
+	for rows.Next() {
+		var i MenuItemPrice
+		if err := rows.Scan(
+			&i.ID,
+			&i.MenuItemID,
+			&i.PriceCents,
+			&i.Currency,
+			&i.ValidFrom,
+			&i.ValidTo,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getMenuItems = `-- name: GetMenuItems :many
+SELECT id, category_id, name, description, image_url, available, created_at, updated_at FROM menu_items
+WHERE category_id = $1
+`
+
+func (q *Queries) GetMenuItems(ctx context.Context, categoryID int64) ([]MenuItem, error) {
+	rows, err := q.db.Query(ctx, getMenuItems, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []MenuItem
+	for rows.Next() {
+		var i MenuItem
+		if err := rows.Scan(
+			&i.ID,
+			&i.CategoryID,
+			&i.Name,
+			&i.Description,
+			&i.ImageUrl,
+			&i.Available,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getMenus = `-- name: GetMenus :many

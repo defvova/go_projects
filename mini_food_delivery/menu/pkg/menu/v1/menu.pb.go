@@ -25,7 +25,8 @@ type Menu struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Active        bool                   `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Active        bool                   `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -70,6 +71,13 @@ func (x *Menu) GetId() int64 {
 func (x *Menu) GetName() string {
 	if x != nil {
 		return x.Name
+	}
+	return ""
+}
+
+func (x *Menu) GetDescription() string {
+	if x != nil {
+		return x.Description
 	}
 	return ""
 }
@@ -181,11 +189,12 @@ var File_menu_v1_menu_proto protoreflect.FileDescriptor
 
 const file_menu_v1_menu_proto_rawDesc = "" +
 	"\n" +
-	"\x12menu/v1/menu.proto\x12\amenu.v1\"B\n" +
+	"\x12menu/v1/menu.proto\x12\amenu.v1\"d\n" +
 	"\x04Menu\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06active\x18\x03 \x01(\bR\x06active\"B\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x16\n" +
+	"\x06active\x18\x04 \x01(\bR\x06active\"B\n" +
 	"\x12GetAllMenusRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x02 \x01(\x05R\x06offset\":\n" +

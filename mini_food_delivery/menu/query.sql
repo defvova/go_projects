@@ -21,6 +21,10 @@ RETURNING *;
 SELECT * FROM categories
 WHERE menu_id = $1 AND name = $2 LIMIT 1;
 
+-- name: GetCategories :many
+SELECT * FROM categories
+WHERE menu_id = $1;
+
 -- name: CreateCategory :one
 INSERT INTO categories (
     menu_id, name, position
@@ -28,6 +32,10 @@ INSERT INTO categories (
     $1, $2, $3
 )
 RETURNING *;
+
+-- name: GetMenuItems :many
+SELECT * FROM menu_items
+WHERE category_id = $1;
 
 -- name: GetMenuItemByCategoryAndName :one
 SELECT * FROM menu_items
@@ -40,6 +48,10 @@ INSERT INTO menu_items (
     $1, $2, $3, $4
 )
 RETURNING *;
+
+-- name: GetMenuItemPrices :many
+SELECT * FROM menu_item_prices
+WHERE menu_item_id = $1;
 
 -- name: PriceExists :one
 SELECT EXISTS (

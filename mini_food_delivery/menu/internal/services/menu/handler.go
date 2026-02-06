@@ -24,17 +24,18 @@ func (h *Handler) GetAllMenus(
 	if err != nil {
 		return nil, err
 	}
-	menuitems := make([]*menuv1.Menu, len(items))
+	data := make([]*menuv1.Menu, len(items))
 
 	for i, item := range items {
-		menuitems[i] = &menuv1.Menu{
-			Id:     item.ID,
-			Name:   item.Name,
-			Active: item.Active,
+		data[i] = &menuv1.Menu{
+			Id:          item.ID,
+			Name:        item.Name,
+			Description: item.Description.String,
+			Active:      item.Active,
 		}
 	}
 
 	return &menuv1.GetAllMenusResponse{
-		Items: menuitems,
+		Items: data,
 	}, nil
 }

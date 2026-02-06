@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package category.v1;
+
+option go_package = "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/category/v1;categoryv1";
+
+service CategoryService {
+  rpc GetAllCategories(GetAllCategoriesRequest) returns (GetAllCategoriesResponse) {}
+}
+
+message Category {
+  int64 id = 1;
+  string name = 2;
+  int32 position = 3;
+}
+
+message GetAllCategoriesRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  int64 menu_id = 3;
+}
+
+message GetAllCategoriesResponse {
+  repeated Category items = 1;
+}

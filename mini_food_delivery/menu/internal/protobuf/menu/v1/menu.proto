@@ -11,7 +11,8 @@ service MenuService {
 message Menu {
   int64 id = 1;
   string name = 2;
-  bool active = 3;
+  string description = 3;
+  bool active = 4;
 }
 
 message GetAllMenusRequest {

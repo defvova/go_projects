@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package menuitem.v1;
+
+option go_package = "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1;menuitemv1";
+
+service MenuItemService {
+  rpc GetAllMenuItems(GetAllMenuItemsRequest) returns (GetAllMenuItemsResponse) {}
+}
+
+message MenuItem {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  string image_url = 4;
+  bool available = 5;
+}
+
+message GetAllMenuItemsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  int64 category_id = 3;
+}
+
+message GetAllMenuItemsResponse {
+  repeated MenuItem items = 1;
+}

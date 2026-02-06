@@ -18,10 +18,10 @@ func NewStore(q *db.Queries) *Store {
 }
 
 func (s *Store) GetAllMenus(ctx context.Context) ([]db.Menu, error) {
-	menus, err := s.q.GetMenus(ctx)
+	data, err := s.q.GetMenus(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return menus, nil
+	return data, nil
 }

@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"mini_food_delivery/menu/db"
 	"mini_food_delivery/menu/internal/config"
-	"mini_food_delivery/menu/internal/services/grpcserver"
-	"mini_food_delivery/menu/internal/services/menu"
+	"mini_food_delivery/menu/internal/grpcserver"
 	"os"
 	"os/signal"
 	"strconv"
@@ -37,9 +36,7 @@ func main() {
 	}
 	defer conn.Close(ctx)
 
-	store := menu.NewStore(db.New(conn))
-	h := menu.NewHandler(store)
-	server, lis, err := s.ServeListener(h)
+	server, lis, err := s.ServeListener(db.New(conn))
 	if err != nil {
 		log.Fatal().Err(err).Msg("server is not run")
 	}
