@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"mini_food_delivery/menu/internal/config"
 	"os"
+	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"
 	"github.com/pressly/goose/v3"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
@@ -28,6 +30,9 @@ var (
 )
 
 func main() {
+	consoleWriter := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+	log.Logger = log.Output(consoleWriter).With().Timestamp().Logger()
+
 	if err := godotenv.Load(); err != nil {
 		log.Fatal().Err(err).Msg("Error loading .env file")
 	}

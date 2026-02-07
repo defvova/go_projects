@@ -25,8 +25,8 @@ type GRPCServer struct {
 }
 
 type Observability struct {
-	OtelEnabled       bool   `env:"OTEL_ENABLED" envDefault:"true"`
-	PrometheusEnabled bool   `env:"pROMETHEUS_ENABLED" envDefault:"true"`
+	OtelEnabled       bool   `env:"OTEL_ENABLED" envDefault:"false"`
+	PrometheusEnabled bool   `env:"pROMETHEUS_ENABLED" envDefault:"false"`
 	OtelPort          int    `env:"OTEL_PORT" envDefault:"5090"`
 	ServiceName       string `env:"SERVICE_NAME" envDefault:"menu-service"`
 	TempoUrl          string `env:"TEMPO_URL" envDefault:"localhost:4317"`
