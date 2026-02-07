@@ -11,6 +11,8 @@ GO_OUT=./pkg
 
 server:
 	find . -type f \( -name '*.go' -o -name '*.html' \) | entr -r go run $(API_CMD)
+metrics:
+	go run ./cmd/metrics/main.go
 db-g-%:
 	goose create $* sql
 db-%:

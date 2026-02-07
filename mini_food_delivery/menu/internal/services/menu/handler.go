@@ -3,6 +3,8 @@ package menu
 import (
 	"context"
 	menuv1 "mini_food_delivery/menu/pkg/menu/v1"
+
+	"go.opentelemetry.io/otel"
 )
 
 type Handler struct {
@@ -20,8 +22,13 @@ func (h *Handler) GetAllMenus(
 	ctx context.Context,
 	req *menuv1.GetAllMenusRequest,
 ) (*menuv1.GetAllMenusResponse, error) {
+	tr := otel.Tracer("menu-handler")
+	ctx, span := tr.Start(ctx, "db.GetMenus")
+	defer span.End()
+
 	items, err := h.store.GetAllMenus(ctx)
 	if err != nil {
+		span.RecordError(err)
 		return nil, err
 	}
 	data := make([]*menuv1.Menu, len(items))

@@ -14,7 +14,9 @@ import (
 	"net"
 	"time"
 
+	grpcprom "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
@@ -36,10 +38,15 @@ func (s *gRPCServer) ServeListener(q *db.Queries) (*grpc.Server, net.Listener, e
 	}
 
 	server := grpc.NewServer(
+		grpc.StatsHandler(otelgrpc.NewServerHandler()),
 		grpc.ChainUnaryInterceptor(
+			grpcprom.UnaryServerInterceptor,
 			interceptor.LoggingInterceptor,
 			interceptor.TimeoutInterceptor(2*time.Second),
 			interceptor.ErrorMappingInterceptor,
+		),
+		grpc.ChainStreamInterceptor(
+			grpcprom.StreamServerInterceptor,
 		),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle: 5 * time.Minute,
@@ -48,6 +55,8 @@ func (s *gRPCServer) ServeListener(q *db.Queries) (*grpc.Server, net.Listener, e
 		}),
 		grpc.MaxRecvMsgSize(4<<20), // 4mb
 	)
+
+	grpcprom.Register(server)
 
 	menuHandler := menu.NewHandler(menu.NewStore(q))
 	menuv1.RegisterMenuServiceServer(server, menuHandler)

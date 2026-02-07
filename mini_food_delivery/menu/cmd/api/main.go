@@ -6,6 +6,7 @@ import (
 	"mini_food_delivery/menu/db"
 	"mini_food_delivery/menu/internal/config"
 	"mini_food_delivery/menu/internal/grpcserver"
+	"mini_food_delivery/menu/internal/otel"
 	"os"
 	"os/signal"
 	"strconv"
@@ -25,6 +26,18 @@ func main() {
 		log.Fatal().Err(err).Msg("Error loading .env file")
 	}
 	c := config.NewConfig()
+	appCtx := context.Background()
+
+	shutdown, err := otel.Init(
+		appCtx,
+		"menu-service",
+		"localhost:4317",
+	)
+	if err != nil {
+		log.Fatal().Err(err).Msg("otel init failed")
+	}
+	defer shutdown(appCtx)
+
 	s := grpcserver.NewGRPCServer(":" + strconv.Itoa(c.GRPCServer.Port))
 	dbCreds := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.Username, c.DB.Password, c.DB.DBName, c.DB.Port)
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
@@ -38,7 +51,7 @@ func main() {
 
 	server, lis, err := s.ServeListener(db.New(conn))
 	if err != nil {
-		log.Fatal().Err(err).Msg("server is not run")
+		log.Fatal().Err(err).Msg("failed to run server")
 	}
 
 	go func() {
