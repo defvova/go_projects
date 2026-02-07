@@ -14,14 +14,6 @@ docker run -d --name tempo \
   -config.file=/etc/tempo.yml
 ```
 
-# Run Grafana
-```
-docker run -d --name grafana \
-  --network observability \
-  -p 3000:3000 \
-  grafana/grafana
-```
-
 # Run Prometheus
 ```
 docker run -d --name prometheus \
@@ -31,13 +23,10 @@ docker run -d --name prometheus \
   prom/prometheus
 ```
 
-# Otel Collector
+# Run Grafana
 ```
-docker run -d --name otel-collector \
+docker run -d --name grafana \
   --network observability \
-  -p 4318:4317 \
-  -p 8889:8889 \
-  -v $(pwd)/otel-collector.yml:/etc/otelcol/config.yml \
-  otel/opentelemetry-collector:latest \
-  --config=/etc/otelcol/config.yml
+  -p 3000:3000 \
+  grafana/grafana
 ```

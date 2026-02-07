@@ -1,4 +1,4 @@
-package otel
+package observability
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
 )
 
-func Init(ctx context.Context, serviceName, endpoint string) (func(context.Context) error, error) {
+func InitOtel(ctx context.Context, serviceName, endpoint string) (func(context.Context) error, error) {
 	exp, err := otlptracegrpc.New(
 		ctx,
 		otlptracegrpc.WithEndpoint(endpoint),

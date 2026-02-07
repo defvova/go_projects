@@ -8,6 +8,7 @@ import (
 type Config struct {
 	GRPCServer GRPCServer
 	DB         ConfigDB
+	Observability
 }
 
 type ConfigDB struct {
@@ -21,6 +22,14 @@ type ConfigDB struct {
 
 type GRPCServer struct {
 	Port int `env:"GRPC_PORT" envDefault:"5001"`
+}
+
+type Observability struct {
+	OtelEnabled       bool   `env:"OTEL_ENABLED" envDefault:"true"`
+	PrometheusEnabled bool   `env:"pROMETHEUS_ENABLED" envDefault:"true"`
+	OtelPort          int    `env:"OTEL_PORT" envDefault:"5090"`
+	ServiceName       string `env:"SERVICE_NAME" envDefault:"menu-service"`
+	TempoUrl          string `env:"TEMPO_URL" envDefault:"localhost:4317"`
 }
 
 func NewConfig() *Config {

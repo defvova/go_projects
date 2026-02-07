@@ -5,6 +5,9 @@ import (
 	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
 
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 type Handler struct {
@@ -22,13 +25,24 @@ func (h *Handler) GetAllMenuItemsWithPrice(
 	ctx context.Context,
 	req *menuitemv1.GetAllMenuItemsWithPriceRequest,
 ) (*menuitemv1.GetAllMenuItemsWithPriceResponse, error) {
+	tr := otel.Tracer("menuItem.Handler")
+	ctx, span := tr.Start(ctx, "menuItem.GetAllMenuItemsWithPrice")
+	defer span.End()
+
+	ctx, dbSpan := tr.Start(ctx, "db.select.menuItems")
 	items, err := h.store.GetAllMenuItemsWithPrice(ctx, req.CategoryId)
 	if err != nil {
+		dbSpan.RecordError(err)
+		dbSpan.SetStatus(codes.Error, err.Error())
+		dbSpan.End()
 		log.Error().Err(err).Msg("MenuItem: sql query error")
 		return nil, err
 	}
-	data := make([]*menuitemv1.MenuItemWithPrice, len(items))
+	dbSpan.SetAttributes(attribute.Int("db.rows", len(items)))
+	dbSpan.End()
 
+	_, mapSpan := tr.Start(ctx, "map.menuItem.entities")
+	data := make([]*menuitemv1.MenuItemWithPrice, len(items))
 	for i, item := range items {
 		data[i] = &menuitemv1.MenuItemWithPrice{
 			Id:          item.ID,
@@ -40,6 +54,8 @@ func (h *Handler) GetAllMenuItemsWithPrice(
 			Currency:    item.Currency,
 		}
 	}
+	mapSpan.SetAttributes(attribute.Int("items.mapped", len(data)))
+	mapSpan.End()
 
 	return &menuitemv1.GetAllMenuItemsWithPriceResponse{
 		Items: data,

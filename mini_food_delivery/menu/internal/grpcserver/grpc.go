@@ -15,48 +15,67 @@ import (
 	"time"
 
 	grpcprom "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
 
-type gRPCServer struct {
-	addr string
+type GRPCOptions struct {
+	OtelEnabled       bool
+	PrometheusEnabled bool
 }
 
-func NewGRPCServer(addr string) *gRPCServer {
-	return &gRPCServer{
-		addr: addr,
-	}
+type GRPCServer struct {
+	Server *grpc.Server
 }
 
-func (s *gRPCServer) ServeListener(q *db.Queries) (*grpc.Server, net.Listener, error) {
-	lis, err := net.Listen("tcp", s.addr)
-	if err != nil {
-		log.Fatal().Err(err).Msgf("failed to listed: %v", s.addr)
+func NewGRPCServer(q *db.Queries, opts GRPCOptions) *GRPCServer {
+	var unaryInterceptors = []grpc.UnaryServerInterceptor{
+		interceptor.LoggingInterceptor,
+		interceptor.TimeoutInterceptor(2 * time.Second),
+		interceptor.ErrorMappingInterceptor,
+	}
+	var (
+		streamInterceptors []grpc.StreamServerInterceptor
+		serverOpts         []grpc.ServerOption
+	)
+
+	if opts.OtelEnabled {
+		serverOpts = append(
+			serverOpts,
+			grpc.StatsHandler(otelgrpc.NewServerHandler()),
+		)
 	}
 
-	server := grpc.NewServer(
-		grpc.StatsHandler(otelgrpc.NewServerHandler()),
-		grpc.ChainUnaryInterceptor(
+	if opts.PrometheusEnabled {
+		grpcprom.EnableHandlingTimeHistogram()
+		unaryInterceptors = append(
+			unaryInterceptors,
 			grpcprom.UnaryServerInterceptor,
-			interceptor.LoggingInterceptor,
-			interceptor.TimeoutInterceptor(2*time.Second),
-			interceptor.ErrorMappingInterceptor,
-		),
-		grpc.ChainStreamInterceptor(
+			interceptor.MetricsInterceptor,
+		)
+		streamInterceptors = append(
+			streamInterceptors,
 			grpcprom.StreamServerInterceptor,
-		),
+		)
+	}
+	serverOpts = append(
+		serverOpts,
+		grpc.ChainUnaryInterceptor(unaryInterceptors...),
+		grpc.ChainStreamInterceptor(streamInterceptors...),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle: 5 * time.Minute,
 			Time:              2 * time.Hour,
 			Timeout:           20 * time.Second,
 		}),
-		grpc.MaxRecvMsgSize(4<<20), // 4mb
+		grpc.MaxRecvMsgSize(4<<20),
 	)
 
-	grpcprom.Register(server)
+	server := grpc.NewServer(serverOpts...)
+
+	if opts.PrometheusEnabled {
+		grpcprom.Register(server)
+	}
 
 	menuHandler := menu.NewHandler(menu.NewStore(q))
 	menuv1.RegisterMenuServiceServer(server, menuHandler)
@@ -70,5 +89,13 @@ func (s *gRPCServer) ServeListener(q *db.Queries) (*grpc.Server, net.Listener, e
 	menuItemPriceHandler := menuitemprice.NewHandler(menuitemprice.NewStore(q))
 	menuitempricev1.RegisterMenuItemPriceServiceServer(server, menuItemPriceHandler)
 
-	return server, lis, nil
+	return &GRPCServer{Server: server}
+}
+
+func (g *GRPCServer) Listen(addr string) (net.Listener, error) {
+	return net.Listen("tcp", addr)
+}
+
+func (g *GRPCServer) Serve(lis net.Listener) error {
+	return g.Server.Serve(lis)
 }

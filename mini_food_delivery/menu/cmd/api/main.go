@@ -6,7 +6,8 @@ import (
 	"mini_food_delivery/menu/db"
 	"mini_food_delivery/menu/internal/config"
 	"mini_food_delivery/menu/internal/grpcserver"
-	"mini_food_delivery/menu/internal/otel"
+	"mini_food_delivery/menu/internal/observability"
+	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 )
@@ -28,17 +30,18 @@ func main() {
 	c := config.NewConfig()
 	appCtx := context.Background()
 
-	shutdown, err := otel.Init(
-		appCtx,
-		"menu-service",
-		"localhost:4317",
-	)
-	if err != nil {
-		log.Fatal().Err(err).Msg("otel init failed")
+	if c.Observability.OtelEnabled {
+		shutdown, err := observability.InitOtel(
+			appCtx,
+			c.Observability.ServiceName,
+			c.Observability.TempoUrl,
+		)
+		if err != nil {
+			log.Fatal().Err(err).Msg("otel init failed")
+		}
+		defer shutdown(appCtx)
 	}
-	defer shutdown(appCtx)
 
-	s := grpcserver.NewGRPCServer(":" + strconv.Itoa(c.GRPCServer.Port))
 	dbCreds := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.Username, c.DB.Password, c.DB.DBName, c.DB.Port)
 	ctx, cancel := context.WithTimeout(context.Background(), 300*time.Millisecond)
 	defer cancel()
@@ -49,19 +52,36 @@ func main() {
 	}
 	defer conn.Close(ctx)
 
-	server, lis, err := s.ServeListener(db.New(conn))
+	if c.Observability.PrometheusEnabled {
+		metricPort := ":" + strconv.Itoa(c.Observability.OtelPort)
+		go func() {
+			log.Info().Msgf("metrics listening on %v", metricPort)
+			if err := http.ListenAndServe(metricPort, promhttp.Handler()); err != nil {
+				log.Fatal().Err(err).Msg("metrics server failed")
+			}
+		}()
+	}
+
+	grpcServer := grpcserver.NewGRPCServer(
+		db.New(conn),
+		grpcserver.GRPCOptions{
+			OtelEnabled:       c.Observability.OtelEnabled,
+			PrometheusEnabled: c.Observability.PrometheusEnabled,
+		},
+	)
+	lis, err := grpcServer.Listen(":" + strconv.Itoa(c.GRPCServer.Port))
 	if err != nil {
-		log.Fatal().Err(err).Msg("failed to run server")
+		log.Fatal().Err(err).Msg("failed to listen")
 	}
 
 	go func() {
 		log.Info().Msgf("gRPC listening on %v", lis.Addr())
-		if err := server.Serve(lis); err != nil {
-			log.Fatal().Err(err)
+		if err := grpcServer.Serve(lis); err != nil {
+			log.Fatal().Err(err).Msg("grpc serve failed")
 		}
 	}()
 
-	waitForShutdown(server)
+	waitForShutdown(grpcServer.Server)
 }
 
 func waitForShutdown(server *grpc.Server) {
