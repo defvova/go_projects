@@ -11,13 +11,13 @@ GO_OUT=./pkg
 
 server:
 	find . -type f \( -name '*.go' -o -name '*.html' \) | entr -r go run $(API_CMD)
-metrics:
-	go run ./cmd/metrics/main.go
+db-seed:
+	go run ./cmd/cli/main.go
 db-g-%:
 	goose create $* sql
 db-%:
 	go run $(MIGRATION_CMD) $*
-gen:
+proto-gen:
 	protoc \
 		--proto_path=$(PROTO_DIR) \
 		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
