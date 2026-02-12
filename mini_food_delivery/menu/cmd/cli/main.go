@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"mini_food_delivery/menu/db"
-	"mini_food_delivery/menu/internal/config"
-	"mini_food_delivery/menu/internal/seed"
 	"os"
 	"time"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/db"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/config"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/seed"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"

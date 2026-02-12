@@ -2,8 +2,9 @@ package interceptor
 
 import (
 	"context"
-	"mini_food_delivery/menu/internal/grpcserver/metrics"
 	"time"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/grpcserver/metrics"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"

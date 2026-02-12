@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package category.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/category/v1;categoryv1";
 
 service CategoryService {
@@ -12,6 +14,8 @@ message Category {
   int64 id = 1;
   string name = 2;
   int32 position = 3;
+  int64 menu_id = 4;
+  google.protobuf.Timestamp created_at = 5;
 }
 
 message GetAllCategoriesRequest {

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package menu.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menu/v1;menuv1";
 
 service MenuService {
@@ -13,6 +15,7 @@ message Menu {
   string name = 2;
   string description = 3;
   bool active = 4;
+  google.protobuf.Timestamp created_at = 5;
 }
 
 message GetAllMenusRequest {

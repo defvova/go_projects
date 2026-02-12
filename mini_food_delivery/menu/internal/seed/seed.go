@@ -2,7 +2,8 @@ package seed
 
 import (
 	"context"
-	"mini_food_delivery/menu/db"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/db"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )

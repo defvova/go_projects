@@ -5,9 +5,10 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	"mini_food_delivery/menu/internal/config"
 	"os"
 	"time"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/config"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/joho/godotenv"

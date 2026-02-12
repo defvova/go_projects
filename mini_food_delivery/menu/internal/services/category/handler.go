@@ -2,12 +2,14 @@ package category
 
 import (
 	"context"
-	categoryv1 "mini_food_delivery/menu/pkg/category/v1"
+
+	categoryv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/category/v1"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Handler struct {
@@ -45,9 +47,11 @@ func (h *Handler) GetAllCategories(
 	data := make([]*categoryv1.Category, len(items))
 	for i, item := range items {
 		data[i] = &categoryv1.Category{
-			Id:       item.ID,
-			Name:     item.Name,
-			Position: item.Position,
+			Id:        item.ID,
+			Name:      item.Name,
+			Position:  item.Position,
+			MenuId:    item.MenuID,
+			CreatedAt: timestamppb.New(item.CreatedAt),
 		}
 	}
 	mapSpan.SetAttributes(attribute.Int("items.mapped", len(data)))

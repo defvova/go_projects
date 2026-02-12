@@ -1,18 +1,20 @@
 package grpcserver
 
 import (
-	"mini_food_delivery/menu/db"
-	"mini_food_delivery/menu/internal/grpcserver/interceptor"
-	"mini_food_delivery/menu/internal/services/category"
-	"mini_food_delivery/menu/internal/services/menu"
-	"mini_food_delivery/menu/internal/services/menuitem"
-	"mini_food_delivery/menu/internal/services/menuitemprice"
-	categoryv1 "mini_food_delivery/menu/pkg/category/v1"
-	menuv1 "mini_food_delivery/menu/pkg/menu/v1"
-	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
-	menuitempricev1 "mini_food_delivery/menu/pkg/menuitemprice/v1"
 	"net"
 	"time"
+
+	categoryv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/category/v1"
+	menuv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menu/v1"
+	menuitemv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1"
+	menuitempricev1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitemprice/v1"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/db"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/grpcserver/interceptor"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/services/category"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/services/menu"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/services/menuitem"
+	"github.com/defvova/go_projects/mini_food_delivery/menu/internal/services/menuitemprice"
 
 	grpcprom "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"

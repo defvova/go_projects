@@ -2,12 +2,14 @@ package menuitems
 
 import (
 	"context"
-	"mini_food_delivery/gateway/internal/utils/grpcstatus"
-	"mini_food_delivery/gateway/internal/utils/writejson"
-	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
 	"net/http"
 	"strconv"
 	"time"
+
+	menuitemv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1"
+
+	"github.com/defvova/go_projects/mini_food_delivery/gateway/internal/utils/grpcstatus"
+	"github.com/defvova/go_projects/mini_food_delivery/gateway/internal/utils/writejson"
 
 	"github.com/go-chi/chi/v5"
 )

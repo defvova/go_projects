@@ -9,6 +9,7 @@ package categoryv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -26,6 +27,8 @@ type Category struct {
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Position      int32                  `protobuf:"varint,3,opt,name=position,proto3" json:"position,omitempty"`
+	MenuId        int64                  `protobuf:"varint,4,opt,name=menu_id,json=menuId,proto3" json:"menu_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -79,6 +82,20 @@ func (x *Category) GetPosition() int32 {
 		return x.Position
 	}
 	return 0
+}
+
+func (x *Category) GetMenuId() int64 {
+	if x != nil {
+		return x.MenuId
+	}
+	return 0
+}
+
+func (x *Category) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
 }
 
 type GetAllCategoriesRequest struct {
@@ -189,11 +206,14 @@ var File_category_v1_category_proto protoreflect.FileDescriptor
 
 const file_category_v1_category_proto_rawDesc = "" +
 	"\n" +
-	"\x1acategory/v1/category.proto\x12\vcategory.v1\"J\n" +
+	"\x1acategory/v1/category.proto\x12\vcategory.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9e\x01\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bposition\x18\x03 \x01(\x05R\bposition\"`\n" +
+	"\bposition\x18\x03 \x01(\x05R\bposition\x12\x17\n" +
+	"\amenu_id\x18\x04 \x01(\x03R\x06menuId\x129\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"`\n" +
 	"\x17GetAllCategoriesRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x02 \x01(\x05R\x06offset\x12\x17\n" +
@@ -220,16 +240,18 @@ var file_category_v1_category_proto_goTypes = []any{
 	(*Category)(nil),                 // 0: category.v1.Category
 	(*GetAllCategoriesRequest)(nil),  // 1: category.v1.GetAllCategoriesRequest
 	(*GetAllCategoriesResponse)(nil), // 2: category.v1.GetAllCategoriesResponse
+	(*timestamppb.Timestamp)(nil),    // 3: google.protobuf.Timestamp
 }
 var file_category_v1_category_proto_depIdxs = []int32{
-	0, // 0: category.v1.GetAllCategoriesResponse.items:type_name -> category.v1.Category
-	1, // 1: category.v1.CategoryService.GetAllCategories:input_type -> category.v1.GetAllCategoriesRequest
-	2, // 2: category.v1.CategoryService.GetAllCategories:output_type -> category.v1.GetAllCategoriesResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: category.v1.Category.created_at:type_name -> google.protobuf.Timestamp
+	0, // 1: category.v1.GetAllCategoriesResponse.items:type_name -> category.v1.Category
+	1, // 2: category.v1.CategoryService.GetAllCategories:input_type -> category.v1.GetAllCategoriesRequest
+	2, // 3: category.v1.CategoryService.GetAllCategories:output_type -> category.v1.GetAllCategoriesResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_category_v1_category_proto_init() }

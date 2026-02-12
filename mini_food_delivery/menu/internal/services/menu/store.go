@@ -2,7 +2,8 @@ package menu
 
 import (
 	"context"
-	"mini_food_delivery/menu/db"
+
+	"github.com/defvova/go_projects/mini_food_delivery/menu/db"
 )
 
 type MenuStore interface {

@@ -9,6 +9,7 @@ package menuv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -27,6 +28,7 @@ type Menu struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	Active        bool                   `protobuf:"varint,4,opt,name=active,proto3" json:"active,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -87,6 +89,13 @@ func (x *Menu) GetActive() bool {
 		return x.Active
 	}
 	return false
+}
+
+func (x *Menu) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
 }
 
 type GetAllMenusRequest struct {
@@ -189,12 +198,14 @@ var File_menu_v1_menu_proto protoreflect.FileDescriptor
 
 const file_menu_v1_menu_proto_rawDesc = "" +
 	"\n" +
-	"\x12menu/v1/menu.proto\x12\amenu.v1\"d\n" +
+	"\x12menu/v1/menu.proto\x12\amenu.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9f\x01\n" +
 	"\x04Menu\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x16\n" +
-	"\x06active\x18\x04 \x01(\bR\x06active\"B\n" +
+	"\x06active\x18\x04 \x01(\bR\x06active\x129\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"B\n" +
 	"\x12GetAllMenusRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x02 \x01(\x05R\x06offset\":\n" +
@@ -217,19 +228,21 @@ func file_menu_v1_menu_proto_rawDescGZIP() []byte {
 
 var file_menu_v1_menu_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_menu_v1_menu_proto_goTypes = []any{
-	(*Menu)(nil),                // 0: menu.v1.Menu
-	(*GetAllMenusRequest)(nil),  // 1: menu.v1.GetAllMenusRequest
-	(*GetAllMenusResponse)(nil), // 2: menu.v1.GetAllMenusResponse
+	(*Menu)(nil),                  // 0: menu.v1.Menu
+	(*GetAllMenusRequest)(nil),    // 1: menu.v1.GetAllMenusRequest
+	(*GetAllMenusResponse)(nil),   // 2: menu.v1.GetAllMenusResponse
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_menu_v1_menu_proto_depIdxs = []int32{
-	0, // 0: menu.v1.GetAllMenusResponse.items:type_name -> menu.v1.Menu
-	1, // 1: menu.v1.MenuService.GetAllMenus:input_type -> menu.v1.GetAllMenusRequest
-	2, // 2: menu.v1.MenuService.GetAllMenus:output_type -> menu.v1.GetAllMenusResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: menu.v1.Menu.created_at:type_name -> google.protobuf.Timestamp
+	0, // 1: menu.v1.GetAllMenusResponse.items:type_name -> menu.v1.Menu
+	1, // 2: menu.v1.MenuService.GetAllMenus:input_type -> menu.v1.GetAllMenusRequest
+	2, // 3: menu.v1.MenuService.GetAllMenus:output_type -> menu.v1.GetAllMenusResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_menu_v1_menu_proto_init() }

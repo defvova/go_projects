@@ -2,7 +2,8 @@ package menuitem
 
 import (
 	"context"
-	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
+
+	menuitemv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"

@@ -1,9 +1,9 @@
 package menugrpc
 
 import (
-	categoryv1 "mini_food_delivery/menu/pkg/category/v1"
-	menuv1 "mini_food_delivery/menu/pkg/menu/v1"
-	menuitemv1 "mini_food_delivery/menu/pkg/menuitem/v1"
+	categoryv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/category/v1"
+	menuv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menu/v1"
+	menuitemv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

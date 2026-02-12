@@ -2,7 +2,8 @@ package menuitemprice
 
 import (
 	"context"
-	menuitempricev1 "mini_food_delivery/menu/pkg/menuitemprice/v1"
+
+	menuitempricev1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitemprice/v1"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"

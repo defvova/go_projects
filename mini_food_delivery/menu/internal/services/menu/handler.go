@@ -2,12 +2,14 @@ package menu
 
 import (
 	"context"
-	menuv1 "mini_food_delivery/menu/pkg/menu/v1"
+
+	menuv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menu/v1"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Handler struct {
@@ -49,6 +51,7 @@ func (h *Handler) GetAllMenus(
 			Name:        item.Name,
 			Description: item.Description.String,
 			Active:      item.Active,
+			CreatedAt:   timestamppb.New(item.CreatedAt),
 		}
 	}
 	mapSpan.SetAttributes(attribute.Int("items.mapped", len(data)))

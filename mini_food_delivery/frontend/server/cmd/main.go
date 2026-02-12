@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 
 	"github.com/defvova/go_projects/mini_food_delivery/frontend/internal/config"
 	"github.com/defvova/go_projects/mini_food_delivery/frontend/internal/routes"
@@ -17,7 +21,12 @@ func main() {
 		log.Fatal().Msg("Error loading .env file")
 	}
 	conf := config.NewConfig()
+	port := ":" + strconv.Itoa(conf.Server.Port)
 	r := chi.NewRouter()
+	s := &http.Server{
+		Addr:    port,
+		Handler: r,
+	}
 
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -29,10 +38,29 @@ func main() {
 
 	r.Get("/", routes.HomeHandler)
 
-	p := ":" + strconv.Itoa(conf.Server.Port)
-	log.Info().Msgf("Server starting on http://localhost%v", p)
-	err := http.ListenAndServe(p, r)
-	if err != nil {
-		log.Fatal().Err(err)
+	closed := make(chan struct{})
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt, syscall.SIGTERM)
+		<-sigint
+
+		log.Info().Msgf("Shutting down server %v", port)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 60)
+		defer cancel()
+
+		if err := s.Shutdown(ctx); err != nil {
+			log.Error().Err(err).Msg("Server shutdown failure")
+		}
+
+		close(closed)
+	}()
+
+	log.Info().Msgf("Server listening on http://localhost%v", port)
+	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatal().Err(err).Msg("Server startup failure!")
 	}
+
+	<-closed
+	log.Info().Msgf("Server shutdown successfully")
 }
