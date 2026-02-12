@@ -1,0 +1,13 @@
+{
+  "name": "mini_food_delivery",
+  "version": "1.0.0",
+  "scripts": {
+    "dev:css": "tailwindcss -i ./assets/tailwind.css -o ./public/app.css --watch",
+    "build:css": "npx tailwindcss -i ./assets/tailwind.css -o ./public/app.css --minify"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.24",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.3.1"
+  }
+}
