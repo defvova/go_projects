@@ -1,7 +1,7 @@
 type Category {
     id: ID!
     menuId: ID!
-    name: String
+    name: String!
     position: Int!
     createdAt: Time!
 }

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package menuitem.v1;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1;menuitemv1";
 
 service MenuItemService {
@@ -16,6 +18,8 @@ message MenuItemWithPrice {
   bool available = 5;
   int32 price_cents = 6;
   string currency = 7;
+  int64 category_id = 8;
+  google.protobuf.Timestamp created_at = 9;
 }
 
 message GetAllMenuItemsWithPriceRequest {

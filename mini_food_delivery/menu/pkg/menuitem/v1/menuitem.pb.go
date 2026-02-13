@@ -9,6 +9,7 @@ package menuitemv1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -30,6 +31,8 @@ type MenuItemWithPrice struct {
 	Available     bool                   `protobuf:"varint,5,opt,name=available,proto3" json:"available,omitempty"`
 	PriceCents    int32                  `protobuf:"varint,6,opt,name=price_cents,json=priceCents,proto3" json:"price_cents,omitempty"`
 	Currency      string                 `protobuf:"bytes,7,opt,name=currency,proto3" json:"currency,omitempty"`
+	CategoryId    int64                  `protobuf:"varint,8,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -111,6 +114,20 @@ func (x *MenuItemWithPrice) GetCurrency() string {
 		return x.Currency
 	}
 	return ""
+}
+
+func (x *MenuItemWithPrice) GetCategoryId() int64 {
+	if x != nil {
+		return x.CategoryId
+	}
+	return 0
+}
+
+func (x *MenuItemWithPrice) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
 }
 
 type GetAllMenuItemsWithPriceRequest struct {
@@ -221,7 +238,7 @@ var File_menuitem_v1_menuitem_proto protoreflect.FileDescriptor
 
 const file_menuitem_v1_menuitem_proto_rawDesc = "" +
 	"\n" +
-	"\x1amenuitem/v1/menuitem.proto\x12\vmenuitem.v1\"\xd1\x01\n" +
+	"\x1amenuitem/v1/menuitem.proto\x12\vmenuitem.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xad\x02\n" +
 	"\x11MenuItemWithPrice\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -230,7 +247,11 @@ const file_menuitem_v1_menuitem_proto_rawDesc = "" +
 	"\tavailable\x18\x05 \x01(\bR\tavailable\x12\x1f\n" +
 	"\vprice_cents\x18\x06 \x01(\x05R\n" +
 	"priceCents\x12\x1a\n" +
-	"\bcurrency\x18\a \x01(\tR\bcurrency\"p\n" +
+	"\bcurrency\x18\a \x01(\tR\bcurrency\x12\x1f\n" +
+	"\vcategory_id\x18\b \x01(\x03R\n" +
+	"categoryId\x129\n" +
+	"\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"p\n" +
 	"\x1fGetAllMenuItemsWithPriceRequest\x12\x14\n" +
 	"\x05limit\x18\x01 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x02 \x01(\x05R\x06offset\x12\x1f\n" +
@@ -258,16 +279,18 @@ var file_menuitem_v1_menuitem_proto_goTypes = []any{
 	(*MenuItemWithPrice)(nil),                // 0: menuitem.v1.MenuItemWithPrice
 	(*GetAllMenuItemsWithPriceRequest)(nil),  // 1: menuitem.v1.GetAllMenuItemsWithPriceRequest
 	(*GetAllMenuItemsWithPriceResponse)(nil), // 2: menuitem.v1.GetAllMenuItemsWithPriceResponse
+	(*timestamppb.Timestamp)(nil),            // 3: google.protobuf.Timestamp
 }
 var file_menuitem_v1_menuitem_proto_depIdxs = []int32{
-	0, // 0: menuitem.v1.GetAllMenuItemsWithPriceResponse.items:type_name -> menuitem.v1.MenuItemWithPrice
-	1, // 1: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:input_type -> menuitem.v1.GetAllMenuItemsWithPriceRequest
-	2, // 2: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:output_type -> menuitem.v1.GetAllMenuItemsWithPriceResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: menuitem.v1.MenuItemWithPrice.created_at:type_name -> google.protobuf.Timestamp
+	0, // 1: menuitem.v1.GetAllMenuItemsWithPriceResponse.items:type_name -> menuitem.v1.MenuItemWithPrice
+	1, // 2: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:input_type -> menuitem.v1.GetAllMenuItemsWithPriceRequest
+	2, // 3: menuitem.v1.MenuItemService.GetAllMenuItemsWithPrice:output_type -> menuitem.v1.GetAllMenuItemsWithPriceResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_menuitem_v1_menuitem_proto_init() }

@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/defvova/go_projects/mini_food_delivery/gateway/graph/resolver"
+	resolver "github.com/defvova/go_projects/mini_food_delivery/gateway/graph/resolver"
 	"github.com/defvova/go_projects/mini_food_delivery/gateway/internal/config"
 	"github.com/defvova/go_projects/mini_food_delivery/gateway/internal/menugrpc"
 	"github.com/defvova/go_projects/mini_food_delivery/gateway/internal/services"
@@ -61,10 +61,12 @@ func main() {
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{
 		MenuService: services.MenuService{
 			MenuClient: menuGrpc.Menu,
-			// MenuItemClient: menuGrpc.MenuItem,
 		},
 		CategoryService: services.CategoryService{
 			CategoryClient: menuGrpc.Category,
+		},
+		MenuItemService: services.MenuItemService{
+			MenuItemClient: menuGrpc.MenuItem,
 		},
 	}}))
 

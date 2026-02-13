@@ -4,6 +4,7 @@ import (
 	"context"
 
 	menuitemv1 "github.com/defvova/go_projects/mini_food_delivery/menu/pkg/menuitem/v1"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
@@ -47,12 +48,14 @@ func (h *Handler) GetAllMenuItemsWithPrice(
 	for i, item := range items {
 		data[i] = &menuitemv1.MenuItemWithPrice{
 			Id:          item.ID,
+			CategoryId:  item.CategoryID,
 			Name:        item.Name,
 			Description: item.Description.String,
 			ImageUrl:    item.ImageUrl.String,
 			Available:   item.Available,
 			PriceCents:  item.PriceCents,
 			Currency:    item.Currency,
+			CreatedAt:   timestamppb.New(item.CreatedAt),
 		}
 	}
 	mapSpan.SetAttributes(attribute.Int("items.mapped", len(data)))

@@ -9,7 +9,7 @@ import (
 type Category struct {
 	ID        int64     `json:"id"`
 	MenuID    int64     `json:"menuId"`
-	Name      *string   `json:"name,omitempty"`
+	Name      string    `json:"name"`
 	Position  int32     `json:"position"`
 	CreatedAt time.Time `json:"createdAt"`
 }
@@ -19,6 +19,16 @@ type Menu struct {
 	Name        string    `json:"name"`
 	Description *string   `json:"description,omitempty"`
 	Active      bool      `json:"active"`
+	CreatedAt   time.Time `json:"createdAt"`
+}
+
+type MenuItem struct {
+	ID          int64     `json:"id"`
+	CategoryID  int64     `json:"categoryId"`
+	Name        string    `json:"name"`
+	Description *string   `json:"description,omitempty"`
+	ImageURL    *string   `json:"imageUrl,omitempty"`
+	Available   bool      `json:"available"`
 	CreatedAt   time.Time `json:"createdAt"`
 }
 

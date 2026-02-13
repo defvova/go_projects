@@ -27,7 +27,7 @@ func (s *CategoryService) GetAllCategories(ctx context.Context, menuId int64) ([
 		data[i] = &model.Category{
 			ID:        item.Id,
 			MenuID:    item.MenuId,
-			Name:      &item.Name,
+			Name:      item.Name,
 			Position:  item.Position,
 			CreatedAt: item.CreatedAt.AsTime(),
 		}
