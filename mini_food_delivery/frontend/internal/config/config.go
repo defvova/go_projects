@@ -7,10 +7,15 @@ import (
 
 type Config struct {
 	Server
+	GraphQL
 }
 
 type Server struct {
 	Port int `env:"SERVER_PORT" envDefault:"3000"`
+}
+
+type GraphQL struct {
+	Url string `env:"GRAPHQL_URL" envDefault:"http://localhost:8080/query"`
 }
 
 func NewConfig() *Config {

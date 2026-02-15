@@ -1,3 +1,28 @@
 {{define "title"}} {{.Title}} {{end}} {{define "content"}}
-<div>Hello world</div>
+<div class="w-full">
+    <ul class="flex flex-col text-sm bg-white rounded-md shadow-md">
+        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Our top menus</li>
+        {{range $i, $menu := .Menus}}
+        <li class="flex rounded-md relative gap-4 p-4 break-all">
+            <img
+                class="size-10 rounded-md"
+                src="https://img.daisyui.com/images/profile/demo/1@94.webp"
+            />
+            <div class="justify-between flex w-full">
+                <div class="flex flex-col space-y-4 w-5/6">
+                    <div>{{$menu.Name}}</div>
+                    <p class="text-xs">{{$menu.Description}}</p>
+                </div>
+                <div class="w-1/6 items-start flex justify-end">
+                    <a
+                        class="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        View
+                    </a>
+                </div>
+            </div>
+        </li>
+        {{end}}
+    </ul>
+</div>
 {{end}}

@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/defvova/go_projects/mini_food_delivery/frontend/internal/config"
+	"github.com/defvova/go_projects/mini_food_delivery/frontend/internal/graphql"
 	"github.com/defvova/go_projects/mini_food_delivery/frontend/internal/routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,7 +37,10 @@ func main() {
 	fs := http.FileServer(http.Dir("./public"))
 	r.Handle("/public/*", http.StripPrefix("/public", fs))
 
-	r.Get("/", routes.HomeHandler)
+	client := graphql.NewClient(conf.GraphQL.Url, "randomToken")
+	homeRoutes := routes.HomeHandler{Client: client}
+
+	r.Get("/", homeRoutes.GetHandler)
 
 	closed := make(chan struct{})
 	go func() {
